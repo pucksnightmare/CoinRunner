@@ -3,21 +3,17 @@ package com.example.coinrunner.game
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Paint
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 
 class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback {
 
-    private val gameLoop: GameLoop = GameLoop(this, holder)
-
-    // Pintura para probar el dibujo (cuadro rojo)
-    private val paint = Paint().apply {
-        color = Color.RED
-    }
+    private lateinit var gameLoop: GameLoop
+    private val player = Player()
 
     init {
         holder.addCallback(this)
+        gameLoop = GameLoop(this, holder)
         isFocusable = true
     }
 
@@ -26,9 +22,7 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
         gameLoop.start()
     }
 
-    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-        // De momento no hacemos nada aquí
-    }
+    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
         gameLoop.running = false
@@ -41,13 +35,7 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
         // Fondo negro
         canvas.drawColor(Color.BLACK)
 
-        // Cuadro rojo de prueba (más adelante aquí irá el jugador, etc.)
-        canvas.drawRect(
-            100f,
-            100f,
-            300f,
-            300f,
-            paint
-        )
+        // Dibujar jugador
+        player.draw(canvas)
     }
 }
