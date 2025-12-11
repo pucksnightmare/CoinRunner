@@ -8,7 +8,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // En lugar de inflar un layout XML, mostramos directamente el GameView
+        // Mostramos directamente nuestro SurfaceView del juego
         val gameView = GameView(this)
         setContentView(gameView)
     }

@@ -9,32 +9,15 @@ class GameLoop(
 ) : Thread() {
 
     var running = false
-    private val targetFPS = 60
-    private val frameTime = 1000L / targetFPS
 
     override fun run() {
         while (running) {
-            val startTime = System.currentTimeMillis()
-            var canvas: Canvas? = null
-
-            try {
-                canvas = surfaceHolder.lockCanvas()
-                if (canvas != null) {
-                    synchronized(surfaceHolder) {
-                        gameView.draw(canvas)
-                    }
+            val canvas: Canvas? = surfaceHolder.lockCanvas()
+            if (canvas != null) {
+                synchronized(surfaceHolder) {
+                    gameView.draw(canvas)
                 }
-            } finally {
-                canvas?.let {
-                    surfaceHolder.unlockCanvasAndPost(it)
-                }
-            }
-
-            // Control de FPS
-            val timeTaken = System.currentTimeMillis() - startTime
-            val sleepTime = frameTime - timeTaken
-            if (sleepTime > 0) {
-                sleep(sleepTime)
+                surfaceHolder.unlockCanvasAndPost(canvas)
             }
         }
     }
@@ -42,6 +25,7 @@ class GameLoop(
     fun joinSafely() {
         try {
             join()
-        } catch (_: InterruptedException) {}
+        } catch (_: InterruptedException) {
+        }
     }
 }

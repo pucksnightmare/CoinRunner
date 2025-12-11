@@ -9,12 +9,15 @@ import android.view.SurfaceView
 
 class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback {
 
-    private lateinit var gameLoop: GameLoop
-    private val paint = Paint()
+    private val gameLoop: GameLoop = GameLoop(this, holder)
+
+    // Pintura para probar el dibujo (cuadro rojo)
+    private val paint = Paint().apply {
+        color = Color.RED
+    }
 
     init {
         holder.addCallback(this)
-        gameLoop = GameLoop(this, holder)
         isFocusable = true
     }
 
@@ -23,7 +26,9 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
         gameLoop.start()
     }
 
-    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
+    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+        // De momento no hacemos nada aquí
+    }
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
         gameLoop.running = false
@@ -33,11 +38,16 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
 
-        // Fondo del juego
+        // Fondo negro
         canvas.drawColor(Color.BLACK)
 
-        // Dibujar un rectángulo de prueba
-        paint.color = Color.RED
-        canvas.drawRect(100f, 100f, 300f, 300f, paint)
+        // Cuadro rojo de prueba (más adelante aquí irá el jugador, etc.)
+        canvas.drawRect(
+            100f,
+            100f,
+            300f,
+            300f,
+            paint
+        )
     }
 }
