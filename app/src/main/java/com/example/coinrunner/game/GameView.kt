@@ -22,20 +22,27 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
         gameLoop.start()
     }
 
-    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
+    override fun surfaceChanged(
+        holder: SurfaceHolder,
+        format: Int,
+        width: Int,
+        height: Int
+    ) {
+        // No necesitamos lógica aquí por ahora
+    }
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
-        gameLoop.running = false
-        gameLoop.joinSafely()
+        gameLoop.stopLoop()
+    }
+
+    fun update() {
+        player.update()
     }
 
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
 
-        // Fondo negro
         canvas.drawColor(Color.BLACK)
-
-        // Dibujar jugador
         player.draw(canvas)
     }
 }

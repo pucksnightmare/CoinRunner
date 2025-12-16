@@ -13,8 +13,10 @@ class GameLoop(
     override fun run() {
         while (running) {
             val canvas: Canvas? = surfaceHolder.lockCanvas()
+
             if (canvas != null) {
                 synchronized(surfaceHolder) {
+                    gameView.update()   // 🔹 ahora sí existe
                     gameView.draw(canvas)
                 }
                 surfaceHolder.unlockCanvasAndPost(canvas)
@@ -22,10 +24,10 @@ class GameLoop(
         }
     }
 
-    fun joinSafely() {
+    fun stopLoop() {
+        running = false
         try {
             join()
-        } catch (_: InterruptedException) {
-        }
+        } catch (_: InterruptedException) {}
     }
 }
