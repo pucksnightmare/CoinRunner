@@ -9,7 +9,7 @@ import android.view.SurfaceView
 class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback {
 
     private lateinit var gameLoop: GameLoop
-    private val player = Player()
+    private lateinit var player: Player
 
     init {
         holder.addCallback(this)
@@ -18,6 +18,7 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
     }
 
     override fun surfaceCreated(holder: SurfaceHolder) {
+        player = Player(width, height)
         gameLoop.running = true
         gameLoop.start()
     }
@@ -28,11 +29,12 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
         width: Int,
         height: Int
     ) {
-        // No necesitamos lógica aquí por ahora
+        // obligatorio aunque esté vacío
     }
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
-        gameLoop.stopLoop()
+        gameLoop.running = false
+        gameLoop.joinSafely()
     }
 
     fun update() {
@@ -42,7 +44,9 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
 
+        // Fondo negro
         canvas.drawColor(Color.BLACK)
+
         player.draw(canvas)
     }
 }
