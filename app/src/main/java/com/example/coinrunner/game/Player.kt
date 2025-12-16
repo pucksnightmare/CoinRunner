@@ -3,48 +3,71 @@ package com.example.coinrunner.game
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.RectF
+import kotlin.math.max
+import kotlin.math.min
 
 class Player(
-    private val screenWidth: Int,
-    private val screenHeight: Int
+    startX: Float,
+    startY: Float
 ) {
+    private val paint = Paint().apply { color = Color.CYAN }
 
-    private val paint = Paint()
+    var x = startX
+    var y = startY
 
-    var x = 50f
-    var y = screenHeight - 200f
+    private val w = 100f
+    private val h = 120f
 
-    private val width = 100f
-    private val height = 100f
+    private var vx = 0f
+    private var vy = 0f
 
-    private var speedX = 8f
+    private val speed = 520f
+    private val gravity = 2200f
+    private val jumpImpulse = -950f
 
-    init {
-        paint.color = Color.BLUE
+    private var onGround = false
+
+    val rect = RectF(x, y, x + w, y + h)
+
+    fun setMoving(left: Boolean, right: Boolean) {
+        vx = when {
+            left && !right -> -speed
+            right && !left -> speed
+            else -> 0f
+        }
     }
 
-    fun update() {
-        x += speedX
+    fun jump() {
+        if (onGround) {
+            vy = jumpImpulse
+            onGround = false
+        }
+    }
 
-        // LÍMITE DERECHO
-        if (x + width > screenWidth) {
-            x = screenWidth - width
-            speedX = 0f
+    fun update(dt: Float, floorY: Float) {
+        // Aplicar gravedad
+        vy += gravity * dt
+
+        // Mover
+        x += vx * dt
+        y += vy * dt
+
+        // Limitar X un poco
+        x = max(0f, min(x, 9000f)) // el límite real lo puedes ajustar si quieres
+
+        // Colisión con suelo
+        val bottom = y + h
+        if (bottom >= floorY) {
+            y = floorY - h
+            vy = 0f
+            onGround = true
         }
 
-        // LÍMITE IZQUIERDO (por si luego movemos a la izquierda)
-        if (x < 0) {
-            x = 0f
-        }
+        rect.set(x, y, x + w, y + h)
     }
 
     fun draw(canvas: Canvas) {
-        canvas.drawRect(
-            x,
-            y,
-            x + width,
-            y + height,
-            paint
-        )
+        canvas.drawRect(rect, paint)
     }
 }
